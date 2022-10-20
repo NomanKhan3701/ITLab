@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId   Int        @id @default(sequence())
+  userName String     @unique
+  email    String     @unique
+  password String
+  Comments Comments[]
+  Posts    Post[]     @relation("createdBy")
+  Likes    Likes[]
+}
+
+model Comments {
+  commentId  Int    @id @default(sequence())
+  comment    String
+  createdBy  User   @relation(fields: [userUserId], references: [userId])
+  userUserId Int
+}
+
+model Post {
+  postId      Int     @id @default(sequence())
+  content     String
+  description String
+  createdBy   User    @relation("createdBy", fields: [userUserId], references: [userId])
+  userUserId  Int
+  Likes       Likes[]
+}
+
+model Likes {
+  likeId     Int  @id @default(sequence())
+  userId     User @relation(fields: [userUserId], references: [userId])
+  postId     Post @relation(fields: [postPostId], references: [postId])
+  userUserId Int
+  postPostId Int
+}

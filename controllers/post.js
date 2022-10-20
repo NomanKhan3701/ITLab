@@ -13,7 +13,7 @@ const getAllPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    const PostData = await Post.find({ _id: req.query.id });
+    const PostData = await Post.findById(req.query.id);
     res.status(200).send({ PostData });
   } catch (error) {
     console.error(error.message);
@@ -49,14 +49,16 @@ const deletePost = async (req, res, next) => {
 };
 const updatePost = async (req, res, next) => {
   try {
-    let postData;
-    PostData = await Post.findOneAndReplace(
-      { _id: req.query.id },
-      req.query.postData
-    );
-    if (postData) res.status(204).send({ PostData });
+    let updatedPost;
+    if (req.query.id) {
+      updatedPost = await Post.findOneAndUpdate(
+        { _id: req.query.id },
+        { textContent: req.query.textContent }
+      );
+    }
+    if (updatePost) res.status(204).send({ updatedPost });
     else res.status(204).send({ message: "No such posts exists" });
-  } catch (e) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
   }
@@ -66,4 +68,5 @@ module.exports = {
   getPost,
   addPost,
   deletePost,
+  updatePost,
 };

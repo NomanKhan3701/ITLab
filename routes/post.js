@@ -7,6 +7,7 @@ const {
   getPost,
   getAllPosts,
   addPost,
+  updatePost,
 } = require("../controllers/post");
 
 router.get(
@@ -21,5 +22,6 @@ router.delete(
   passport.authenticate("user", { session: false }),
   deletePost
 );
+router.patch("/", updatePost);
 
 module.exports = router;

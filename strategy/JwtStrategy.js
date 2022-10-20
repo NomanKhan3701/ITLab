@@ -12,9 +12,16 @@ passport.use(
   "user",
   new JwtStrategy(opts, async (jwt_payload, done) => {
     try {
-      const user = await User.findOne({
-        _id: jwt_payload._id,
-      });
+      let user;
+      const value = await redis.get(jwt_payload._id.toString());
+      if (value) {
+        user = JSON.parse(value);
+        console.log(user);
+      } else {
+        user = await User.findOne({
+          _id: jwt_payload._id,
+        });
+      }
       if (user) {
         return done(null, user);
       } else {

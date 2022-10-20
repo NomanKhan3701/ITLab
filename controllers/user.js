@@ -47,10 +47,12 @@ const signup = async (req, res) => {
     }).save();
     const token = newUser.generateAuthToken();
     newUser.password = undefined;
-    res.status(201).send({
-      message: "User Created successfully",
-      data: { token: token, user: newUser },
-    });
+    res
+      .status(201)
+      .send({
+        message: "User Created successfully",
+        data: { token: token, user: newUser },
+      });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });

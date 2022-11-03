@@ -5,29 +5,33 @@ const app = express();
 const userRoute = require("./routes/user");
 const postRoute = require("./routes/post");
 const poetRoute=require("./routes/poetry")
-const cors = require("cors");
+// const cors = require("cors");
 
-dotenv.config();
-const PORT = process.env.PORT || 8000;
-const corsOptions = {
-  origin: "*",
-};
+// dotenv.config();
+// const PORT = process.env.PORT || 8000;
+// const corsOptions = {
+//   origin: "*",
+// };
 
-app.use(express.json({ limit: "30mb", extended: true }));
-app.use(express.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors(corsOptions));
+// app.use(express.json({ limit: "30mb", extended: true }));
+// app.use(express.urlencoded({ limit: "30mb", extended: true }));
+// app.use(cors(corsOptions));
 
-app.use("/api/user", userRoute);
-app.use("/api/post", postRoute);
-app.use("/api/poetry", poetRoute);
+// app.use("/api/user", userRoute);
+// app.use("/api/post", postRoute);
+// app.use("/api/poetry", poetRoute);
 
 
-app.listen(PORT, async () => {
-  try {
-    // mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, () =>
-      console.log(`Server running at port ${PORT}`)
-  } catch (e) {
-    console.log(e);
-  }
-});
+// app.listen(PORT, async () => {
+//   try {
+//     // mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, () =>
+//       console.log(`Server running at port ${PORT}`)
+//   } catch (e) {
+//     console.log(e);
+//   }
+//});
 
+const {getPoetWithImage}=require('./controllers/poetry');
+
+
+getPoetWithImage()

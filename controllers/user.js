@@ -1,12 +1,23 @@
-const express = require("express");
 const argon2 = require("argon2");
-const Post = require("../models/post");
 const redis = require("../middleware/redis");
-const { User, validateSignup, validateLogin } = require("../models/user");
-
+const {
+  generateAuthToken,
+  validateSignup,
+  validateLogin,
+} = require("../models/user");
+const prisma = require("../models/prisma");
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, "-password");
+    const users = await prisma.User.findMany({
+      select: {
+        userId: true,
+        userName: true,
+        email: true,
+        Comments: true,
+        Posts: true,
+        Likes: true,
+      },
+    });
     res.status(200).send({ users });
   } catch (error) {
     console.error(error.message);
@@ -16,7 +27,19 @@ const getAllUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.query.id });
+    const user = await prisma.User.findUnique({
+      where: {
+        userId: Number(req.query.id),
+      },
+      select: {
+        userId: true,
+        userName: true,
+        email: true,
+        Comments: true,
+        Posts: true,
+        Likes: true,
+      },
+    });
     if (user) return res.status(200).send(user);
     else return res.status(404).send({ message: "User Not found" });
   } catch (error) {
@@ -33,26 +56,26 @@ const signup = async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const user = await User.findOne({
-      email: req.body.email,
+    const user = await prisma.User.findUnique({
+      where: {
+        email: req.body.email,
+      },
     });
     if (user)
       return res
         .status(409)
         .send({ message: "Admin with given Email already exists!" });
     const hashPassword = await argon2.hash(req.body.password);
-    const newUser = await new User({
-      ...req.body,
-      password: hashPassword,
-    }).save();
-    const token = newUser.generateAuthToken();
+    const data = { ...req.body, password: hashPassword };
+    const newUser = await prisma.user.create({
+      data: data,
+    });
     newUser.password = undefined;
-    res
-      .status(201)
-      .send({
-        message: "User Created successfully",
-        data: { token: token, user: newUser },
-      });
+    const token = generateAuthToken(newUser);
+    res.status(201).send({
+      message: "User Created successfully",
+      data: { token: token, user: newUser },
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
@@ -60,20 +83,22 @@ const signup = async (req, res) => {
 };
 const login = async (req, res, next) => {
   try {
-    console.log("Jello");
     const { error } = validateLogin(req.body);
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    const user = await User.findOne({
-      email: req.body.email,
+    const user = await prisma.user.findUnique({
+      where: {
+        email: req.body.email,
+      },
     });
     if (!user)
       return res.status(401).send({ message: "Invalid Email  or Password" });
 
     if (await argon2.verify(user.password, req.body.password)) {
-      const token = user.generateAuthToken();
-      await redis.set(user._id.toString(), JSON.stringify(user));
+      user.password = undefined;
+      const token = generateAuthToken(user);
+      await redis.set(user.userId.toString(), JSON.stringify(user));
       return res.status(200).send({
         token: "Bearer " + token,
         message: "Logged In Successfully",

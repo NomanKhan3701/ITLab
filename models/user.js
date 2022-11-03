@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-  
   },
   email: {
     type: String,
@@ -32,7 +31,7 @@ const userSchema = new mongoose.Schema({
 });
 const validateSignup = (data) => {
   const schema = Joi.object({
-    username: Joi.string().required().label("username"),
+    userName: Joi.string().required().label("username"),
     email: Joi.string().email().required().label("email"),
     password: passwordComplexity().label("password"),
   });
@@ -45,12 +44,12 @@ const validateLogin = (data) => {
   });
   return schema.validate(data);
 };
-userSchema.methods.generateAuthToken = function (data) {
-  const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
+const generateAuthToken = function (data) {
+  const token = jwt.sign({ data }, process.env.JWTPRIVATEKEY, {
     expiresIn: "7d",
   });
   return token;
 };
 const User = mongoose.model("User", userSchema);
 
-module.exports = { User, validateSignup, validateLogin };
+module.exports = { generateAuthToken, validateSignup, validateLogin };

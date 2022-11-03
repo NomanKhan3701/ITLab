@@ -24,9 +24,8 @@ app.use("/api/poetry", poetRoute);
 
 app.listen(PORT, async () => {
   try {
-    mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, () =>
+    // mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, () =>
       console.log(`Server running at port ${PORT}`)
-    );
   } catch (e) {
     console.log(e);
   }

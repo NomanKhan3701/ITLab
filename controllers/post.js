@@ -27,7 +27,7 @@ const getPost = async (req, res, next) => {
 
 const addPost = async (req, res, next) => {
   try {
-    let postData = { ...req.body, createdBy: req.user._id.toString() };
+    let postData = { ...req.body, createdBy: req.user.userId.toString() };
     const { error } = validatePost(postData);
     if (error)
       return res.status(400).send({ message: error.details[0].message });
@@ -35,7 +35,7 @@ const addPost = async (req, res, next) => {
     const newPost = await prisma.post.create({
       data: postData,
     });
-    await new Post(postData).save();
+    //await new Post(postData).save();
     res.status(201).send({ message: "Post Created successfully" });
   } catch (error) {
     console.error(error.message);

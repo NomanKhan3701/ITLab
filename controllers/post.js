@@ -27,7 +27,7 @@ const getPost = async (req, res, next) => {
 
 const addPost = async (req, res, next) => {
   try {
-    let postData = { ...req.body, createdBy: req.user.userId.toString() };
+    let postData = req.body;
     const { error } = validatePost(postData);
     if (error)
       return res.status(400).send({ message: error.details[0].message });
@@ -47,7 +47,7 @@ const deletePost = async (req, res, next) => {
   try {
     let PostData;
     PostData = await prisma.post.delete({
-      where:{ postId: req.query.id },});
+      where:{ postId: Number(req.query.id) },});
     if (PostData) res.status(204).send({ PostData });
     else res.status(204).send({ message: "No such posts exists" });
   } catch (error) {

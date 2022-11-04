@@ -16,7 +16,6 @@ model User {
   email    String     @unique
   password String
   Comments Comments[]
-  Posts    Post[]     @relation("createdBy")
   Likes    Likes[]
 }
 
@@ -31,8 +30,6 @@ model Post {
   postId      Int     @id @default(sequence())
   content     String
   description String
-  createdBy   User    @relation("createdBy", fields: [userUserId], references: [userId])
-  userUserId  Int
   Likes       Likes[]
 }
 

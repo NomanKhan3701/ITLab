@@ -30,8 +30,3 @@ app.listen(PORT, async () => {
 });
 
 
-//trying 
-const {getPoetWithImage}=require('./controllers/poetry');
-
-
-getPoetWithImage()

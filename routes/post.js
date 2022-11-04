@@ -12,13 +12,14 @@ const {
 
 router.get(
   "/Posts",
+  passport.authenticate("user", { session: false }),
   getAllPosts
 );
-router.get("/Post", getPost);
-router.post("/", addPost);
+router.get("/Post",passport.authenticate('user',{session:false}), getPost);
+router.post("/", passport.authenticate("user", { session: false }), addPost);
 router.delete(
   "/",
- // passport.authenticate("user", { session: false }),
+  passport.authenticate("user", { session: false }),
   deletePost
 );
 router.patch("/", updatePost);

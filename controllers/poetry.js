@@ -12,6 +12,15 @@ const getPoets = async () => {
     }
 }
 
+const showPoets = async (req, res) => {
+    try{
+        const poets=await getPoets();
+        res.status(200).send(poets)
+    } catch (error) {
+        res.status(500).send({ message: "Internal Server Error" });
+    }
+}
+
 const getPoetryByPoets = async (req, res, next) => {
     try {
         const poetImage = await image();
@@ -68,4 +77,4 @@ const getPoetWithImage = async (req, res) => {
         console.error(error)
     }
 }
-module.exports = { getPoetryByPoets, getPoetWithImage }
+module.exports = { getPoetryByPoets, getPoetWithImage,showPoets }

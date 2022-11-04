@@ -13,6 +13,7 @@ const getAllPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
+    console.log(req.user)
     const PostData = await  prisma.post.findUnique({
       where: {
         postId: Number(req.query.id),
@@ -32,6 +33,7 @@ const addPost = async (req, res, next) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
     //console.log(postData);
+   // postData={...postData,createdBy: req.user}
     const newPost = await prisma.post.create({
       data: postData,
     });

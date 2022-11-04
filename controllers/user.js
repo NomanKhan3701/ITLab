@@ -14,7 +14,6 @@ const getAllUsers = async (req, res) => {
         userName: true,
         email: true,
         Comments: true,
-        Posts: true,
         Likes: true,
       },
     });
@@ -36,7 +35,6 @@ const getUser = async (req, res) => {
         userName: true,
         email: true,
         Comments: true,
-        Posts: true,
         Likes: true,
       },
     });

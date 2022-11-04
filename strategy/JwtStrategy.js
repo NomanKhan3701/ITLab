@@ -1,5 +1,5 @@
 const passport = require("passport");
-const { User } = require("../models/user");
+const prisma = require("../models/prisma");
 const redis = require("../middleware/redis");
 const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -18,8 +18,10 @@ passport.use(
         user = JSON.parse(value);
         console.log(user);
       } else {
-        user = await User.findOne({
-          _id: jwt_payload._id,
+        user = await prisma.User.findUnique({
+          where: {
+            userId: Number(jwt_payload.userId),
+          },
         });
       }
       if (user) {

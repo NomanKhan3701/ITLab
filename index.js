@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = express();
 const userRoute = require("./routes/user");
@@ -21,7 +20,6 @@ app.use("/api/post", postRoute);
 
 app.listen(PORT, async () => {
   try {
-    // mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, () =>
       console.log(`Server running at port ${PORT}`)
   } catch (e) {
     console.log(e);

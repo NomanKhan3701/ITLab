@@ -1,9 +1,9 @@
-const express = require("express");
-const { Post, validatePost } = require("../models/post");
+const { validatePost } = require("../models/post");
+const prisma = require("../models/prisma");
 
 const getAllPosts = async (req, res, next) => {
   try {
-    const Posts = await Post.find({});
+    const Posts = await prisma.post.findMany({});
     res.status(200).send({ Posts });
   } catch (e) {
     console.error(error.message);
@@ -13,7 +13,11 @@ const getAllPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    const PostData = await Post.findById(req.query.id);
+    const PostData = await  prisma.post.findUnique({
+      where: {
+        postId: Number(req.query.id),
+      },
+    });
     res.status(200).send({ PostData });
   } catch (error) {
     console.error(error.message);
@@ -27,7 +31,10 @@ const addPost = async (req, res, next) => {
     const { error } = validatePost(postData);
     if (error)
       return res.status(400).send({ message: error.details[0].message });
-    console.log(postData);
+    //console.log(postData);
+    const newPost = await prisma.post.create({
+      data: postData,
+    });
     await new Post(postData).save();
     res.status(201).send({ message: "Post Created successfully" });
   } catch (error) {
@@ -38,9 +45,10 @@ const addPost = async (req, res, next) => {
 
 const deletePost = async (req, res, next) => {
   try {
-    let postData;
-    PostData = await Post.findOneAndDelete({ _id: req.query.id });
-    if (postData) res.status(204).send({ PostData });
+    let PostData;
+    PostData = await prisma.post.delete({
+      where:{ postId: req.query.id },});
+    if (PostData) res.status(204).send({ PostData });
     else res.status(204).send({ message: "No such posts exists" });
   } catch (error) {
     console.error(error.message);

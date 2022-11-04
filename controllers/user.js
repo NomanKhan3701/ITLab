@@ -52,7 +52,7 @@ const signup = async (req, res) => {
   try {
     const { error } = validateSignup(req.body);
     if (error) {
-      console.log(error);
+     // console.log(error);
       return res.status(400).send({ message: error.details[0].message });
     }
 
@@ -83,7 +83,7 @@ const signup = async (req, res) => {
 };
 const login = async (req, res, next) => {
   try {
-    const { error } = validateLogin(req.body);
+    const { error } = validateLogin(req.body); // check schema validation
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 

@@ -17,6 +17,7 @@ model User {
   password String
   Comments Comments[]
   Likes    Likes[]
+  Post     Post[]
 }
 
 model Comments {
@@ -30,7 +31,9 @@ model Post {
   postId      Int     @id @default(sequence())
   content     String
   description String
+  createdBy   User    @relation(fields: [usersUserId], references: [userId])
   Likes       Likes[]
+  usersUserId Int
 }
 
 model Likes {

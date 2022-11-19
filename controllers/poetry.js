@@ -28,7 +28,7 @@ const getPoetryByPoets = async (req, res, next) => {
         try {
             await Promise.all(await poetImage.map(async (poet) => {
                 const url = "https://poetrydb.org/author" + `/${[poet.name]}`;
-                console.log(url)
+                //console.log(url)
                 const poetryByPoets = await axios.get(url);
                 poetries.push({
                     poets: poet.name,

@@ -13,6 +13,7 @@ const getAllUsers = async (req, res) => {
         userId: true,
         userName: true,
         email: true,
+        Post:true,
         Comments: true,
         Likes: true,
       },

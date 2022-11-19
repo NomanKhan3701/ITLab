@@ -33,7 +33,7 @@ const addPost = async (req, res, next) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
     //console.log(postData);
-   // postData={...postData,createdBy: req.user}
+    postData={...postData,usersUserId: req.user.userId}
     const newPost = await prisma.post.create({
       data: postData,
     });

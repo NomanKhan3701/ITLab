@@ -1,4 +1,4 @@
-const { validatePost } = require("../models/post");
+const { validatePost ,validateComment} = require("../models/post");
 const prisma = require("../models/prisma");
 
 const getAllPosts = async (req, res, next) => {
@@ -73,10 +73,52 @@ const updatePost = async (req, res, next) => {
     res.status(500).send({ message: "Internal Server Error" });
   }
 };
+
+const likePost=(req,res,next)=>{
+  try {
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+}
+// const addComment=(req,res,next)=>{
+//   try {
+//      const data = req.body;
+//     data.userEmail = req.user.email;
+//     const { error } = validateComment(data);
+//     if (error)
+//       return res.status(400).send({
+//         message: error.details[0].message,
+//       });
+//     const comment = await prisma.postComments.create({
+//       data: data,
+//     });
+//     const comments = await prisma.postComments.findMany({
+//       where: {
+//         postsPostId: Number(req.body.postsPostId),
+//       },
+//       include:{
+//         author:true,
+//       }
+//     });
+//     res.status(201).send(Comments);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       message: "Internal Server Error",
+//     });
+//   }
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).send({ message: "Internal Server Error" });
+//   }
+// }
 module.exports = {
   getAllPosts,
   getPost,
   addPost,
   deletePost,
   updatePost,
+  likePost
 };

@@ -56,9 +56,14 @@ const signup = async (req, res) => {
     }
 
     const user = await prisma.User.findUnique({
-      where: {
+      where:
+      OR[ {
         email: req.body.email,
       },
+      {
+        userName:req.body.userName
+      }
+    ]
     });
     if (user)
       return res

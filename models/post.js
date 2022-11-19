@@ -6,7 +6,13 @@ const validatePost = (data) => {
   });
   return schema.validate(data);
 };
+const validateComment=(data)=>{
+   const schema = Joi.object({
+    comment: Joi.string().label("Content"),
+  });
+  return schema.validate(data);
+}
 
 // const Post = mongoose.model("Post", postSchema);
 
-module.exports = { validatePost };
+module.exports = { validatePost ,validateComment};

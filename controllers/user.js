@@ -104,6 +104,7 @@ const login = async (req, res, next) => {
       return res.status(200).send({
         token: "Bearer " + token,
         message: "Logged In Successfully",
+        user:user,
       });
     } else {
       return res.status(401).send({ message: "Invalid Password" }); // password did not match

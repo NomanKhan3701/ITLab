@@ -41,5 +41,5 @@ model Likes {
   userId     User @relation(fields: [userUserId], references: [userId])
   postId     Post @relation(fields: [postPostId], references: [postId])
   userUserId Int
-  postPostId Int
+  postPostId Int
 }

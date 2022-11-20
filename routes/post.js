@@ -10,6 +10,7 @@ const {
   updatePost,
   addComment,
   likePost,
+  getPostsbyUsers,
 } = require("../controllers/post");
 
 router.get(
@@ -25,7 +26,7 @@ router.delete(
   deletePost
 );
 router.patch("/", updatePost);
-
+router.get("/:userUserId",getPostsbyUsers);
 router.patch("/like/:postPostId",passport.authenticate("user",{session:false}),likePost);
 router.post("/comments",passport.authenticate("user",{session:false}),addComment);
 

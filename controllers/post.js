@@ -11,6 +11,19 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
+const getPostsbyUsers=async(req,res,next)=>{
+  try {
+    const posts= await prisma.post.findMany({
+      where:{
+      usersUserId:(Number)(req.params.userUserId),
+      }
+    })
+    res.send({data:posts,message:"Sent"});
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+}
 const getPost = async (req, res, next) => {
   try {
     //console.log(req.user)
@@ -131,4 +144,5 @@ module.exports = {
   updatePost,
   likePost,
   addComment,
+  getPostsbyUsers
 };

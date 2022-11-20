@@ -24,8 +24,8 @@ app.use("/api/poetry", poetRoute);
 app.listen(PORT, async () => {
   try {
       console.log(`Server running at port ${PORT}`)
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.error(error);
   }
 });
 

@@ -51,24 +51,22 @@ const signup = async (req, res) => {
   try {
     const { error } = validateSignup(req.body);
     if (error) {
-     // console.log(error);
       return res.status(400).send({ message: error.details[0].message });
     }
-
-    const user = await prisma.User.findUnique({
-      where:
-      OR[ {
-        email: req.body.email,
-      },
-      {
-        userName:req.body.userName
-      }
-    ]
-    });
-    if (user)
+    const user = await prisma.User.findMany({
+        where: {
+        OR:[
+        {email: req.body.email},
+        {userName:req.body.userName}
+        ]
+        }
+      });
+    if (user.length!=0)
+    {
       return res
         .status(409)
         .send({ message: "Admin with given Email already exists!" });
+    }
     const hashPassword = await argon2.hash(req.body.password);
     const data = { ...req.body, password: hashPassword };
     const newUser = await prisma.user.create({

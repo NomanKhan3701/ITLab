@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,23 +20,28 @@ model User {
 model Comments {
   commentId  Int    @id @default(sequence())
   comment    String
-  createdBy  User   @relation(fields: [userUserId], references: [userId])
   userUserId Int
+  createdBy  User   @relation(fields: [userUserId], references: [userId])
+  Post       Post?  @relation(fields: [postPostId], references: [postId])
+  postPostId Int?
 }
 
 model Post {
-  postId      Int     @id @default(sequence())
+  postId      Int        @id @default(sequence())
   content     String
   description String
-  createdBy   User    @relation(fields: [usersUserId], references: [userId])
-  Likes       Likes[]
   usersUserId Int
+  createdBy   User       @relation(fields: [usersUserId], references: [userId])
+  Likes       Likes[]
+  comments    Comments[] 
 }
 
 model Likes {
   likeId     Int  @id @default(sequence())
-  userId     User @relation(fields: [userUserId], references: [userId])
-  postId     Post @relation(fields: [postPostId], references: [postId])
   userUserId Int
   postPostId Int
+  postId     Post @relation(fields: [postPostId], references: [postId])
+  userId     User @relation(fields: [userUserId], references: [userId])
+
+  @@unique([userUserId, postPostId])
 }

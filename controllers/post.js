@@ -13,7 +13,7 @@ const getAllPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    console.log(req.user)
+    //console.log(req.user)
     const PostData = await  prisma.post.findUnique({
       where: {
         postId: Number(req.query.id),
@@ -61,7 +61,7 @@ const updatePost = async (req, res, next) => {
   try {
     let updatedPost;
     if (req.query.id) {
-      updatedPost = await Post.findOneAndUpdate(
+      updatedPost = await prisma.post.update(
         { _id: req.query.id },
         { textContent: req.query.textContent }
       );
@@ -74,51 +74,61 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-const likePost=(req,res,next)=>{
+const likePost=async(req,res,next)=>{
   try {
-    
+   const data={userUserId:(Number)(req.user.userId),postPostId:(Number)(req.params.postPostId)}
+    const like=await prisma.likes.findFirst({
+      where:data,
+    });
+    if(like)
+    {
+      console.log("not here")
+      await prisma.likes.delete({where:{likeId:like.likeId}});
+    }
+    else{
+      console.log("here")
+      await prisma.likes.create({data});
+    }
+  return res.status(202).send();
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
   }
 }
-// const addComment=(req,res,next)=>{
-//   try {
-//      const data = req.body;
-//     data.userEmail = req.user.email;
-//     const { error } = validateComment(data);
-//     if (error)
-//       return res.status(400).send({
-//         message: error.details[0].message,
-//       });
-//     const comment = await prisma.postComments.create({
-//       data: data,
-//     });
-//     const comments = await prisma.postComments.findMany({
-//       where: {
-//         postsPostId: Number(req.body.postsPostId),
-//       },
-//       include:{
-//         author:true,
-//       }
-//     });
-//     res.status(201).send(Comments);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       message: "Internal Server Error",
-//     });
-//   }
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send({ message: "Internal Server Error" });
-//   }
-// }
+const addComment=async(req,res,next)=>{
+  try {
+     const data = req.body;
+    data.userUserId = Number(req.user.userId);
+    const { error } = validateComment(data);
+    if (error)
+      return res.status(400).send({
+        message: error.details[0].message,
+      });
+    const comment = await prisma.Comments.create({
+      data: data,
+    });
+    const comments = await prisma.Comments.findMany({
+      where: {
+        postPostId: Number(req.body.postPostId),
+      },
+      include:{
+        createdBy:true,
+      }
+    });
+    res.status(201).send(comments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Internal Server Error",
+    });
+  }
+}
 module.exports = {
   getAllPosts,
   getPost,
   addPost,
   deletePost,
   updatePost,
-  likePost
+  likePost,
+  addComment,
 };

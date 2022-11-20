@@ -71,7 +71,7 @@ async function image() {
 const getPoetWithImage = async (req, res) => {
     try {
         const imagePoet = await image();
-        console.log(imagePoet);
+       // console.log(imagePoet);
         res.status(200).send(imagePoet)
     } catch (error) {
         console.error(error)

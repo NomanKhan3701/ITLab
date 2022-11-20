@@ -8,6 +8,8 @@ const validatePost = (data) => {
 };
 const validateComment=(data)=>{
    const schema = Joi.object({
+    postPostId:Joi.number().label("PostId"),
+    userUserId:Joi.number().label("Author Id"),
     comment: Joi.string().label("Content"),
   });
   return schema.validate(data);

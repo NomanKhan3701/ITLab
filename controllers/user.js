@@ -102,10 +102,10 @@ const login = async (req, res, next) => {
       const token = generateAuthToken(user);
       await redis.set(user.userId.toString(), JSON.stringify(user));
       return res.status(200).send({
-        token: "Bearer " + token,
+        token: token,
         user: user,
         message: "Logged In Successfully",
-        user:user,
+        user: user,
       });
     } else {
       return res.status(401).send({ message: "Invalid Password" }); // password did not match

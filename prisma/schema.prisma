@@ -39,9 +39,14 @@ model Post {
 model Likes {
   likeId     Int  @id @default(sequence())
   userUserId Int
+<<<<<<< HEAD
   postPostId Int
   postId     Post @relation(fields: [postPostId], references: [postId])
   userId     User @relation(fields: [userUserId], references: [userId])
 
   @@unique([userUserId, postPostId])
 }
+=======
+  postPostId Int
+}
+>>>>>>> 849992720ef0b89df1f04fbba3acd00c8c1a1cc1

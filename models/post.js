@@ -3,6 +3,7 @@ const validatePost = (data) => {
   const schema = Joi.object({
     content: Joi.string().label("Content"),
     description: Joi.string().label("description"),
+    tags: Joi.array().items(Joi.string()).label("tags"),
   });
   return schema.validate(data);
 };

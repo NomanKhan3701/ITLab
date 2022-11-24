@@ -8,4 +8,4 @@ function database() {
     return client
 }
 
-module.exports ={database}
+module.exports = {database}

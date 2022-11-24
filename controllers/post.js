@@ -26,14 +26,14 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
-const getPostsbyUsers=async(req,res,next)=>{
+const getPostsbyUsers = async (req, res, next) => {
   try {
-    const posts= await prisma.post.findMany({
-      where:{
-      usersUserId:(Number)(req.params.userUserId),
+    const posts = await prisma.post.findMany({
+      where: {
+        usersUserId: (Number)(req.params.userUserId),
       }
     })
-    res.send({data:posts,message:"Sent"});
+    res.send({ data: posts, message: "Sent" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
@@ -66,7 +66,7 @@ const addPost = async (req, res, next) => {
       data: postData,
     });
     //await new Post(postData).save();
-   return res.status(201).send({ message: "Post Created successfully" });
+    return res.status(201).send({ message: "Post Created successfully" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });

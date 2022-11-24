@@ -12,10 +12,10 @@ model User {
   userName String     @unique
   email    String     @unique
   password String
+  image    Json
   Comments Comments[]
   Likes    Likes[]
   Post     Post[]
-  image    Json
 }
 
 model Comments {

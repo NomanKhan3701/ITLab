@@ -12,22 +12,20 @@ passport.use(
   "user",
   new JwtStrategy(opts, async (jwt_payload, done) => {
     try {
-      console.log(jwt_payload.data)
       let user;
       const value = await redis.get(jwt_payload.data.userId.toString());
-      console.log(value);
       if (value) {
         user = await JSON.parse(value);
-        console.log(user);
+        console.log("User from redis", user);
       } else {
         user = await prisma.User.findUnique({
           where: {
             email: jwt_payload.data.email,
           },
         });
+        console.log("User from redis", user);
       }
       if (user) {
-        console.log(user);
         return done(null, user);
       } else {
         return done(null, false);

@@ -19,15 +19,18 @@ router.get(
   getAllPosts
 );
 router.get("/Post", passport.authenticate('user', { session: false }), getPost);
-router.post("/",  passport.authenticate("user", { session: false }), addPost);
+router.post("/", passport.authenticate("user", { session: false }), (req, res, next) => {
+  console.log(req.body);
+  next();
+}, addPost);
 router.delete(
   "/",
   passport.authenticate("user", { session: false }),
   deletePost
 );
 router.patch("/", updatePost);
-router.get("/:userUserId",getPostsbyUsers);
-router.patch("/like/:postPostId",passport.authenticate("user",{session:false}),likePost);
-router.post("/comments",passport.authenticate("user",{session:false}),addComment);
+router.get("/:userUserId", getPostsbyUsers);
+router.patch("/like/:postPostId", passport.authenticate("user", { session: false }), likePost);
+router.post("/comments", passport.authenticate("user", { session: false }), addComment);
 
 module.exports = router;

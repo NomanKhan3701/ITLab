@@ -15,6 +15,7 @@ model User {
   Comments Comments[]
   Likes    Likes[]
   Post     Post[]
+  image    Json
 }
 
 model Comments {

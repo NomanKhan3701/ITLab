@@ -6,6 +6,7 @@ const {
   validateLogin,
 } = require("../models/user");
 const prisma = require("../models/prisma");
+const { addImage, deleteImage } = require("../utils/ImageUpload");
 const getAllUsers = async (req, res) => {
   try {
     const users = await prisma.User.findMany({
@@ -50,6 +51,8 @@ const getUser = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
+    const imageObject=await addImage(req.body.image);
+    req.body.image=imageObject;
     const { error } = validateSignup(req.body);
     if (error) {
       return res.status(400).send({ message: error.details[0].message });
@@ -116,9 +119,41 @@ const login = async (req, res, next) => {
   }
 };
 
+const editProfileImage=async(req,res,next)=>{
+  try {
+    const user=await prisma.user.findUnique({
+      where: {
+        userId:(Number)(req.params.userId)
+      },
+    });
+    if(user){
+    let img=user.image;
+   // console.log(req.body.updatedImg)
+    let newImage=await addImage(req.body.updatedImg);
+    const updateImagePromise=prisma.user.update(
+      {
+        where:{
+         userId:Number(req.params.userId)
+        },data:
+        {image:newImage}
+      })
+    const delImagePromise=deleteImage(img.public_id);
+    await Promise.all([updateImagePromise,delImagePromise]);
+    res.status(202).send({message:"Profile updated Successfully"});
+    }
+    else{
+      res.status(404).send({message:"User Not Found"});
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUser,
   login,
   signup,
+  editProfileImage
 };

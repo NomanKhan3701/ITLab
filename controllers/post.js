@@ -66,7 +66,7 @@ const addPost = async (req, res, next) => {
       data: postData,
     });
     //await new Post(postData).save();
-    res.status(201).send({ message: "Post Created successfully" });
+   return res.status(201).send({ message: "Post Created successfully" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });

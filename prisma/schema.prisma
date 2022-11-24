@@ -21,9 +21,9 @@ model Comments {
   commentId  Int    @id @default(sequence())
   comment    String
   userUserId Int
-  createdBy  User   @relation(fields: [userUserId], references: [userId])
-  Post       Post?  @relation(fields: [postPostId], references: [postId])
   postPostId Int?
+  Post       Post?  @relation(fields: [postPostId], references: [postId])
+  createdBy  User   @relation(fields: [userUserId], references: [userId])
 }
 
 model Post {
@@ -32,8 +32,9 @@ model Post {
   description String
   usersUserId Int
   createdBy   User       @relation(fields: [usersUserId], references: [userId])
+  comments    Comments[]
   Likes       Likes[]
-  comments    Comments[] 
+  tags        String[]
 }
 
 model Likes {

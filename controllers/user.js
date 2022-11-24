@@ -13,7 +13,7 @@ const getAllUsers = async (req, res) => {
         userId: true,
         userName: true,
         email: true,
-        Post:true,
+        Post: true,
         Comments: true,
         Likes: true,
       },
@@ -35,6 +35,7 @@ const getUser = async (req, res) => {
         userId: true,
         userName: true,
         email: true,
+        Post: true,
         Comments: true,
         Likes: true,
       },
@@ -54,15 +55,14 @@ const signup = async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
     const user = await prisma.User.findMany({
-        where: {
-        OR:[
-        {email: req.body.email},
-        {userName:req.body.userName}
+      where: {
+        OR: [
+          { email: req.body.email },
+          { userName: req.body.userName }
         ]
-        }
-      });
-    if (user.length!=0)
-    {
+      }
+    });
+    if (user.length != 0) {
       return res
         .status(409)
         .send({ message: "Admin with given Email already exists!" });
@@ -103,6 +103,7 @@ const login = async (req, res, next) => {
       await redis.set(user.userId.toString(), JSON.stringify(user));
       return res.status(200).send({
         token: "Bearer " + token,
+        user: user,
         message: "Logged In Successfully",
       });
     } else {

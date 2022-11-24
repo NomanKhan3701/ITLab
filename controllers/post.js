@@ -1,11 +1,26 @@
-const { validatePost ,validateComment} = require("../models/post");
+const { validatePost, validateComment } = require("../models/post");
 const prisma = require("../models/prisma");
 
 const getAllPosts = async (req, res, next) => {
   try {
-    const Posts = await prisma.post.findMany({});
+    const Posts = await prisma.post.findMany({
+      select: {
+        postId: true,
+        createdBy: {
+          select: {
+            userId: true,
+            userName: true,
+            email: true,
+          }
+        },
+        Likes: true,
+        content: true,
+        description: true,
+        tags: true,
+      }
+    });
     res.status(200).send({ Posts });
-  } catch (e) {
+  } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
   }
@@ -27,7 +42,7 @@ const getPostsbyUsers=async(req,res,next)=>{
 const getPost = async (req, res, next) => {
   try {
     //console.log(req.user)
-    const PostData = await  prisma.post.findUnique({
+    const PostData = await prisma.post.findUnique({
       where: {
         postId: Number(req.query.id),
       },
@@ -46,7 +61,7 @@ const addPost = async (req, res, next) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
     //console.log(postData);
-    postData={...postData,usersUserId: req.user.userId}
+    postData = { ...postData, usersUserId: req.user.userId }
     const newPost = await prisma.post.create({
       data: postData,
     });
@@ -62,7 +77,8 @@ const deletePost = async (req, res, next) => {
   try {
     let PostData;
     PostData = await prisma.post.delete({
-      where:{ postId: Number(req.query.id) },});
+      where: { postId: Number(req.query.id) },
+    });
     if (PostData) res.status(204).send({ PostData });
     else res.status(204).send({ message: "No such posts exists" });
   } catch (error) {
@@ -87,30 +103,35 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-const likePost=async(req,res,next)=>{
+const likePost = async (req, res, next) => {
   try {
-   const data={userUserId:(Number)(req.user.userId),postPostId:(Number)(req.params.postPostId)}
-    const like=await prisma.likes.findFirst({
-      where:data,
+    const data = { userUserId: (Number)(req.user.userId), postPostId: (Number)(req.params.postPostId) }
+    const like = await prisma.likes.findFirst({
+      where: data,
     });
-    if(like)
-    {
-      console.log("not here")
-      await prisma.likes.delete({where:{likeId:like.likeId}});
+
+    if (like) {
+      await prisma.likes.delete({ where: { likeId: like.likeId } });
     }
-    else{
-      console.log("here")
-      await prisma.likes.create({data});
+    else {
+      await prisma.likes.create({ data });
     }
-  return res.status(202).send();
+    const Likes = await prisma.likes.findMany({
+      where: {
+        postPostId: Number(req.params.postPostId),
+      }
+    })
+    return res.status(202).send({
+      Likes
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).send({ message: "Internal Server Error" });
   }
 }
-const addComment=async(req,res,next)=>{
+const addComment = async (req, res, next) => {
   try {
-     const data = req.body;
+    const data = req.body;
     data.userUserId = Number(req.user.userId);
     const { error } = validateComment(data);
     if (error)
@@ -124,8 +145,8 @@ const addComment=async(req,res,next)=>{
       where: {
         postPostId: Number(req.body.postPostId),
       },
-      include:{
-        createdBy:true,
+      include: {
+        createdBy: true,
       }
     });
     res.status(201).send(comments);

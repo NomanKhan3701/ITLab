@@ -12,13 +12,13 @@ passport.use(
   "user",
   new JwtStrategy(opts, async (jwt_payload, done) => {
     try {
-      //console.log(jwt_payload.data)
+      console.log(jwt_payload.data)
       let user;
       const value = await redis.get(jwt_payload.data.userId.toString());
-      //console.log(value);
+      console.log(value);
       if (value) {
         user = await JSON.parse(value);
-       console.log(user);
+        console.log(user);
       } else {
         user = await prisma.User.findUnique({
           where: {
@@ -27,10 +27,10 @@ passport.use(
         });
       }
       if (user) {
+        console.log(user);
         return done(null, user);
       } else {
         return done(null, false);
-        // or you could create a new account
       }
     } catch (error) {
       console.error(error);

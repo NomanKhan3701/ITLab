@@ -31,10 +31,10 @@ model Post {
   content     String
   description String
   usersUserId Int
+  tags        String[]
   createdBy   User       @relation(fields: [usersUserId], references: [userId])
   comments    Comments[]
   Likes       Likes[]
-  tags        String[]
 }
 
 model Likes {
@@ -44,5 +44,5 @@ model Likes {
   postId     Post @relation(fields: [postPostId], references: [postId])
   userId     User @relation(fields: [userUserId], references: [userId])
 
-  @@unique([userUserId, postPostId])
+  @@unique([userUserId, postPostId])
 }

@@ -13,16 +13,19 @@ passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
     try {
       //console.log(jwt_payload.data)
-      // const value = await redis.get(jwt_payload.userId);
-      // if (value) {
-      //   user = JSON.parse(value);
-      //   console.log(user);
-      // } else {
-        const user = await prisma.User.findUnique({
+      let user;
+      const value = await redis.get(jwt_payload.data.userId.toString());
+      //console.log(value);
+      if (value) {
+        user = await JSON.parse(value);
+       console.log(user);
+      } else {
+        user = await prisma.User.findUnique({
           where: {
             email: jwt_payload.data.email,
           },
         });
+      }
       if (user) {
         return done(null, user);
       } else {

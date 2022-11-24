@@ -39,6 +39,7 @@ const getUser = async (req, res) => {
         Post: true,
         Comments: true,
         Likes: true,
+        image:true,
       },
     });
     if (user) return res.status(200).send(user);

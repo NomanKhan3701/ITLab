@@ -141,7 +141,7 @@ const editProfileImage = async (req, res, next) => {
         })
       const delImagePromise = deleteImage(img.public_id);
       await Promise.all([updateImagePromise, delImagePromise]);
-      res.status(202).send({ message: "Profile updated Successfully" });
+      res.status(202).send({ message: "Profile updated Successfully", image: newImage });
     }
     else {
       res.status(404).send({ message: "User Not Found" });
